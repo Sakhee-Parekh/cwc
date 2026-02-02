@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -34,7 +35,6 @@ import {
   ShieldCheck,
   StickyNote,
   Copy,
-  Check,
 } from "lucide-react";
 
 import type { Provider } from "../lib/providers";
@@ -169,6 +169,24 @@ function Dialog({
   title: string;
   children: React.ReactNode;
 }) {
+  const [portalEl, setPortalEl] = React.useState<HTMLDivElement | null>(null);
+
+  // Create a dedicated portal mount at the end of <body>
+  React.useEffect(() => {
+    const el = document.createElement("div");
+    el.setAttribute("data-portal", "cwc-modal");
+    // Make SURE this mount is not affected by parent layout
+    el.style.position = "relative";
+    el.style.zIndex = "2147483647";
+    document.body.appendChild(el);
+    setPortalEl(el);
+
+    return () => {
+      document.body.removeChild(el);
+      setPortalEl(null);
+    };
+  }, []);
+
   React.useEffect(() => {
     if (!open) return;
 
@@ -186,47 +204,92 @@ function Dialog({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !portalEl) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4"
-      onMouseDown={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 2147483647,
+        pointerEvents: "auto",
+      }}
     >
+      {/* Overlay */}
       <div
-        className="
-      relative
-      w-full bg-white shadow-xl ring-1 ring-black/5
-      sm:max-w-3xl sm:rounded-2xl
-      h-[92vh] sm:h-auto
-      rounded-2xl
-      overflow-hidden
-    "
-        onMouseDown={(e) => e.stopPropagation()}
+        onClick={onClose}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(0,0,0,0.45)",
+        }}
+      />
+      <div
+        style={{
+          position: "relative",
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 16,
+        }}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="
-        absolute right-4 top-4
-        inline-flex h-9 w-9 items-center justify-center
-        rounded-full
-        text-zinc-500
-        hover:bg-zinc-100 hover:text-zinc-900
-        focus:outline-none focus:ring-2 focus:ring-zinc-400/30
-        active:scale-95
-      "
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: 768,
+            background: "white",
+            borderRadius: 16,
+            boxShadow:
+              "0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05)",
+            overflow: "hidden",
+            height: "92vh",
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <X className="h-5 w-5" />
-        </button>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{
+              position: "absolute",
+              right: 16,
+              top: 16,
+              height: 36,
+              width: 36,
+              borderRadius: 9999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#71717a",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              zIndex: 1,
+            }}
+          >
+            <X className="h-5 w-5" />
+          </button>
 
-        {/* Scrollable content */}
-        <div className="p-5 pt-14 overflow-y-auto h-[calc(92vh-56px)] sm:h-auto">
-          {children}
+          <div
+            style={{
+              padding: 20,
+              paddingTop: 56,
+              overflowY: "auto",
+              height: "calc(92vh - 56px)",
+            }}
+          >
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </div>,
+    portalEl,
   );
 }
 
@@ -254,9 +317,6 @@ function CallButton({
     e.stopPropagation();
   }
 
-  // ─────────────────────────────────────────────
-  // MOBILE: direct call (no dialog)
-  // ─────────────────────────────────────────────
   if (isMobile) {
     return (
       <a
@@ -270,9 +330,6 @@ function CallButton({
     );
   }
 
-  // ─────────────────────────────────────────────
-  // DESKTOP: open dialog
-  // ─────────────────────────────────────────────
   return (
     <>
       <button
@@ -433,8 +490,7 @@ const columns: ColumnDef<Provider>[] = [
               ) as any
             }
           >
-            Interpreters:
-            {y("Availability of Professional Interpreters (Y/N)")}
+            Interpreters:{y("Availability of Professional Interpreters (Y/N)")}
           </Badge>
           <Badge tone={ynTone(y("Telehealth (Y/N)")) as any}>
             Telehealth: {y("Telehealth (Y/N)")}
@@ -547,8 +603,7 @@ function ProviderCard({
             ynTone(p["Availability of Professional Interpreters (Y/N)"]) as any
           }
         >
-          Interpreters:
-          {p["Availability of Professional Interpreters (Y/N)"]}
+          Interpreters:{p["Availability of Professional Interpreters (Y/N)"]}
         </Badge>
         <Badge tone={ynTone(p["Telehealth (Y/N)"]) as any}>
           Telehealth: {p["Telehealth (Y/N)"]}
@@ -561,7 +616,6 @@ function ProviderCard({
         </Badge>
       </div>
 
-      {/* actions */}
       <div className="mt-4 flex gap-2">
         <a
           href={url}
@@ -602,9 +656,11 @@ function ProviderCard({
 export function ProvidersTable({
   data,
   initialQuery,
+  showSearch = true,
 }: {
   data: Provider[];
   initialQuery?: string;
+  showSearch?: boolean;
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "Customer review rating", desc: true },
@@ -619,7 +675,7 @@ export function ProvidersTable({
       Address: true,
       "Organization Type": true,
       Categories: true,
-      access: true,
+      Access: true,
     });
 
   const [selected, setSelected] = React.useState<Provider | null>(null);
@@ -683,40 +739,45 @@ export function ProvidersTable({
   return (
     <div className="space-y-4">
       {/* Header / Controls */}
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-zinc-900"></h1>
-          <p className="mt-1 text-sm text-zinc-500"></p>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
-            <input
-              value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search providers, location, services..."
-              className="w-full rounded-2xl border border-zinc-200 bg-white py-2 pl-10 pr-3 text-sm text-zinc-900 shadow-sm outline-none placeholder:text-zinc-400 focus:border-zinc-300 focus:ring-4 focus:ring-zinc-100 sm:w-[340px]"
-            />
+      {(showSearch || !isMobile) && (
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-zinc-900"></h1>
+            <p className="mt-1 text-sm text-zinc-500"></p>
           </div>
 
-          {!isMobile && (
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            {showSearch && (
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
+                <input
+                  value={globalFilter ?? ""}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                  placeholder="Search providers, location, services..."
+                  className="w-full rounded-2xl border border-zinc-200 bg-white py-2 pl-10 pr-3 text-sm text-zinc-900 shadow-sm outline-none placeholder:text-zinc-400 focus:border-zinc-300 focus:ring-4 focus:ring-zinc-100 sm:w-[340px]"
+                />
+              </div>
+            )}
+
+            {!isMobile && (
+              <button
+                onClick={() => setColumnsOpen((v) => !v)}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                Manage columns
+                <ChevronDown className="h-4 w-4 text-zinc-500" />
+              </button>
+            )}
             <button
-              onClick={() => setColumnsOpen((v) => !v)}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+              onClick={() => exportRowsToCSV(filteredRows)}
+              className="inline-flex items-center justify-center rounded-2xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
             >
-              <SlidersHorizontal className="h-4 w-4" />
-              Manage columns
-              <ChevronDown className="h-4 w-4 text-zinc-500" />
+              Export filtered
             </button>
-          )}
-          <button
-            onClick={() => exportRowsToCSV(filteredRows)}
-            className="inline-flex items-center justify-center rounded-2xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
-          >
-            Export filtered
-          </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Column menu */}
       {columnsOpen ? (
@@ -811,9 +872,9 @@ export function ProvidersTable({
           </div>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
-          <div className="max-h-[70vh] overflow-auto">
-            <table className="min-w-full border-separate border-spacing-0">
+        <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm">
+          <div className="max-h-[58vh] overflow-auto">
+            <table className="w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-10 bg-white">
                 {table.getHeaderGroups().map((hg) => (
                   <tr key={hg.id}>
@@ -939,32 +1000,34 @@ export function ProvidersTable({
       >
         {selected ? (
           <div className="space-y-4">
-            {/* Top summary card */}
             <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <div className="text-lg font-semibold text-zinc-900 truncate">
+                  <div className="text-lg font-semibold text-zinc-900 flex-wrap">
                     {selected["Provider Name"]}
                   </div>
                   <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-600">
                     {selected["System / Network Name"] ? (
                       <span className="inline-flex items-center gap-1">
-                        <Building2 className="h-4 w-4" />
-                        <span className="truncate">
+                        <div className="h-4 w-4">
+                          <Building2 className="h-4 w-4" />
+                        </div>
+                        <span className="flex-wrap">
                           {selected["System / Network Name"]}
                         </span>
                       </span>
                     ) : null}
                     {selected["Organization Type"] ? (
                       <span className="inline-flex items-center gap-1">
-                        <ShieldCheck className="h-4 w-4" />
+                        <div className="h-4 w-4">
+                          <ShieldCheck className="h-4 w-4" />
+                        </div>
                         {selected["Organization Type"]}
                       </span>
                     ) : null}
                   </div>
                 </div>
 
-                {/* Rating pill */}
                 <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900">
                   <Star className="h-4 w-4" />
                   <span>
@@ -974,7 +1037,6 @@ export function ProvidersTable({
                 </div>
               </div>
 
-              {/* Quick actions */}
               <div className="mt-4 flex flex-wrap gap-2">
                 {selected["Website URL"] ? (
                   <ActionButton
@@ -988,7 +1050,6 @@ export function ProvidersTable({
                 {selected["Phone number"] &&
                 selected["Phone number"] !== "N/A" ? (
                   <>
-                    {/* Reuse your existing CallButton (opens your nicer call dialog) */}
                     <CallButton
                       phone={selected["Phone number"]}
                       providerName={selected["Provider Name"]}
@@ -1019,7 +1080,6 @@ export function ProvidersTable({
               </div>
             </div>
 
-            {/* Grid sections */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Section title="Location" icon={<MapPin className="h-4 w-4" />}>
                 {selected["Address"] ? (
@@ -1105,7 +1165,9 @@ export function ProvidersTable({
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <Languages className="h-4 w-4 mt-0.5 text-zinc-500" />
+                    <div className="h-4 w-4">
+                      <Languages className="h-4 w-4 mt-0.5 text-zinc-500" />
+                    </div>
                     <div>
                       <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                         Languages (clinical)
@@ -1119,7 +1181,6 @@ export function ProvidersTable({
               </Section>
             </div>
 
-            {/* Access chips */}
             <Section
               title="Access & support"
               icon={<ShieldCheck className="h-4 w-4" />}
@@ -1153,7 +1214,6 @@ export function ProvidersTable({
               </div>
             </Section>
 
-            {/* Notes */}
             {selected["Notes for Indian / South Asian Patients"] ? (
               <Section title="Notes" icon={<StickyNote className="h-4 w-4" />}>
                 <div className="text-sm text-zinc-800 whitespace-pre-wrap">
