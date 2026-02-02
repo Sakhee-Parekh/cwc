@@ -21,11 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
       >
         <div className="min-h-screen bg-zinc-50">
           <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur">
-            <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+            <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between px-4 sm:px-6">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-2xl bg-zinc-900" />
                 <div className="leading-tight">
@@ -37,9 +37,7 @@ export default function RootLayout({
               </div>
             </div>
           </header>
-          <div className="mx-auto w-full flex-1 overflow-hidden px-4 py-6 sm:px-6">
-            {children}
-          </div>
+          <div className="mx-auto max-w-[1440px] py-6 px-6">{children}</div>
         </div>
       </body>
     </html>

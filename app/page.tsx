@@ -12,16 +12,23 @@ export default async function Page() {
   const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
   const data = parsed.data as Provider[];
 
+  const syncedAtISO = new Date().toISOString();
+
+  const syncedLabel = new Date(syncedAtISO).toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
   return (
     <main className="space-y-4">
       {/* database meta row */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-900">
-            Provider database
-          </h1>
           <p className="mt-1 text-sm text-zinc-500">
-            {data.length} providers • Published Google Sheet
+            {data.length} providers • Last synced {syncedLabel}
           </p>
         </div>
 
@@ -31,11 +38,7 @@ export default async function Page() {
       </div>
 
       {/* surface */}
-      <section className="rounded-3xl border border-zinc-200 bg-white shadow-sm">
-        <div className="p-4 sm:p-6">
-          <ProvidersTable data={data} />
-        </div>
-      </section>
+      <ProvidersTable data={data} />
     </main>
   );
 }

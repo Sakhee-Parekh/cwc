@@ -722,7 +722,7 @@ export function ProvidersTable({ data }: { data: Provider[] }) {
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
-          <div className="max-h-[62vh] overflow-auto">
+          <div className="max-h-[70vh] overflow-auto">
             <table className="min-w-full border-separate border-spacing-0">
               <thead className="sticky top-0 z-10 bg-white">
                 {table.getHeaderGroups().map((hg) => (
