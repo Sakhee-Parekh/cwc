@@ -22,6 +22,7 @@ export default function ProvidersSearchPageClient({
 
   const [what, setWhat] = React.useState(whatParam || "");
   const [where, setWhere] = React.useState(whereParam || "");
+  const [isSearching, setIsSearching] = React.useState(false);
 
   React.useEffect(() => {
     setWhat(whatParam || "");
@@ -32,6 +33,8 @@ export default function ProvidersSearchPageClient({
   }, [whereParam]);
 
   function pushParams(nextWhat: string, nextWhere: string) {
+    setIsSearching(true);
+
     const w = (nextWhat ?? "").trim();
     const loc = (nextWhere ?? "").trim();
 
@@ -42,8 +45,17 @@ export default function ProvidersSearchPageClient({
     router.push(`/search?${params.toString()}`);
   }
 
+  React.useEffect(() => {
+    setIsSearching(false);
+  }, [whatParam, whereParam]);
+
   function submitCombined(e: React.FormEvent) {
     e.preventDefault();
+    if (
+      what.trim() === (whatParam ?? "").trim() &&
+      where.trim() === (whereParam ?? "").trim()
+    )
+      return;
     pushParams(what, where);
   }
 
@@ -71,6 +83,7 @@ export default function ProvidersSearchPageClient({
                   <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#6B8477]" />
                   <input
                     value={what}
+                    disabled={isSearching}
                     onChange={(e) => setWhat(e.target.value)}
                     placeholder='How can we help? (e.g. "therapy", "support group")'
                     className="
@@ -89,6 +102,7 @@ export default function ProvidersSearchPageClient({
                   <MapPin className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#6B8477]" />
                   <input
                     value={where}
+                    disabled={isSearching}
                     onChange={(e) => setWhere(e.target.value)}
                     placeholder='Where? (city, region, or "telehealth")'
                     className="
@@ -105,19 +119,29 @@ export default function ProvidersSearchPageClient({
 
                 <button
                   type="submit"
+                  disabled={isSearching}
                   className="
-                      inline-flex items-center justify-center
-                      rounded-2xl sm:rounded-full
-                      bg-[#709775]
-                      px-6 py-3
-                      text-sm font-semibold text-white
-                      shadow-sm
-                      hover:bg-[#5f8762]
-                      active:scale-[0.99]
-                      w-full sm:w-auto
-                    "
+                    inline-flex items-center justify-center gap-2
+                    rounded-2xl sm:rounded-full
+                    bg-[#709775]
+                    px-6 py-3
+                    text-sm font-semibold text-white
+                    shadow-sm
+                    hover:bg-[#5f8762]
+                    active:scale-[0.99]
+                    w-full sm:w-auto
+                    disabled:opacity-70
+                    disabled:cursor-not-allowed
+                "
                 >
-                  Search
+                  {isSearching ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                      Searching…
+                    </>
+                  ) : (
+                    "Search"
+                  )}
                 </button>
               </div>
             </form>
