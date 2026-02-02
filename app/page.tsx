@@ -1,6 +1,6 @@
 import Papa from "papaparse";
-import { ProvidersTable } from "./components/ProvidersTable";
 import type { Provider } from "./lib/providers";
+import ProvidersExperience from "./components/ProvidersExperience";
 
 const CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3e-AIJYp3_64kJWKtrPRxYDvHRLaU3yxXklGiX_dlKBgX9_QJkQHccuPIjcr918IZAKuqAyoXViFh/pub?gid=0&single=true&output=csv";
@@ -13,7 +13,6 @@ export default async function Page() {
   const data = parsed.data as Provider[];
 
   const syncedAtISO = new Date().toISOString();
-
   const syncedLabel = new Date(syncedAtISO).toLocaleString(undefined, {
     year: "numeric",
     month: "short",
@@ -22,23 +21,5 @@ export default async function Page() {
     minute: "2-digit",
   });
 
-  return (
-    <main className="space-y-4">
-      {/* database meta row */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="mt-1 text-sm text-zinc-500">
-            {data.length} providers • Last synced {syncedLabel}
-          </p>
-        </div>
-
-        <div className="text-xs text-zinc-500">
-          Tip: use search + filters to narrow results
-        </div>
-      </div>
-
-      {/* surface */}
-      <ProvidersTable data={data} />
-    </main>
-  );
+  return <ProvidersExperience data={data} syncedLabel={syncedLabel} />;
 }

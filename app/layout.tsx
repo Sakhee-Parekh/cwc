@@ -9,8 +9,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Provider Finder",
-  description: "Searchable provider database",
+  title: "Community Wellness Collective",
+  description: "Community Wellness Collective",
 };
 
 export default function RootLayout({
@@ -23,22 +23,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
       >
-        <div className="min-h-screen bg-zinc-50">
-          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur">
-            <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between px-4 sm:px-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-2xl bg-zinc-900" />
-                <div className="leading-tight">
-                  <div className="text-sm font-semibold text-zinc-900">
-                    Provider Finder
-                  </div>
-                  <div className="text-xs text-zinc-500">Search database</div>
-                </div>
-              </div>
-            </div>
-          </header>
-          <div className="mx-auto max-w-[1440px] py-6 px-6">{children}</div>
-        </div>
+        <div className="min-h-screen bg-zinc-50">{children}</div>
       </body>
     </html>
   );

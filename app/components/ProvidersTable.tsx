@@ -170,15 +170,15 @@ function Dialog({
   children: React.ReactNode;
 }) {
   React.useEffect(() => {
+    if (!open) return;
+
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
-    }
-    if (open) {
-      window.addEventListener("keydown", onKey);
     }
 
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
 
     return () => {
       window.removeEventListener("keydown", onKey);
@@ -542,6 +542,14 @@ function ProviderCard({
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
+        <Badge
+          tone={
+            ynTone(p["Availability of Professional Interpreters (Y/N)"]) as any
+          }
+        >
+          Interpreters:
+          {p["Availability of Professional Interpreters (Y/N)"]}
+        </Badge>
         <Badge tone={ynTone(p["Telehealth (Y/N)"]) as any}>
           Telehealth: {p["Telehealth (Y/N)"]}
         </Badge>
@@ -591,14 +599,21 @@ function ProviderCard({
   );
 }
 
-export function ProvidersTable({ data }: { data: Provider[] }) {
+export function ProvidersTable({
+  data,
+  initialQuery,
+}: {
+  data: Provider[];
+  initialQuery?: string;
+}) {
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "Customer review rating", desc: true },
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [globalFilter, setGlobalFilter] = React.useState(initialQuery ?? "");
+  const prevInitialRef = React.useRef<string | undefined>(initialQuery);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
       Address: true,
@@ -611,6 +626,16 @@ export function ProvidersTable({ data }: { data: Provider[] }) {
   const [columnsOpen, setColumnsOpen] = React.useState(false);
 
   const isMobile = useMediaQuery("(max-width: 640px)");
+
+  React.useEffect(() => {
+    if (prevInitialRef.current !== initialQuery) {
+      const prev = prevInitialRef.current ?? "";
+      if (globalFilter === prev) {
+        setGlobalFilter(initialQuery ?? "");
+      }
+      prevInitialRef.current = initialQuery;
+    }
+  }, [initialQuery, globalFilter]);
 
   const table = useReactTable({
     data,
@@ -755,7 +780,7 @@ export function ProvidersTable({ data }: { data: Provider[] }) {
               <span className="font-medium text-zinc-900">{data.length}</span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
