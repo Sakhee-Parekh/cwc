@@ -25,6 +25,16 @@ import {
   SlidersHorizontal,
   Star,
   X,
+  Building2,
+  Globe,
+  MapPin,
+  Languages,
+  Users,
+  Stethoscope,
+  ShieldCheck,
+  StickyNote,
+  Copy,
+  Check,
 } from "lucide-react";
 
 import type { Provider } from "../lib/providers";
@@ -41,6 +51,55 @@ function useMediaQuery(query: string) {
   }, [query]);
 
   return matches;
+}
+
+function ActionButton({
+  icon,
+  children,
+  onClick,
+  href,
+}: {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  onClick?: () => void;
+  href?: string;
+}) {
+  const cls =
+    "inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50 active:scale-[0.99]";
+  if (href) {
+    return (
+      <a className={cls} href={href} target="_blank" rel="noreferrer">
+        {icon}
+        {children}
+      </a>
+    );
+  }
+  return (
+    <button className={cls} onClick={onClick} type="button">
+      {icon}
+      {children}
+    </button>
+  );
+}
+
+function Section({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-2xl border border-zinc-200 bg-white p-4">
+      <div className="flex items-center gap-2">
+        <span className="text-zinc-500">{icon}</span>
+        <h4 className="text-sm font-semibold text-zinc-900">{title}</h4>
+      </div>
+      <div className="mt-3">{children}</div>
+    </section>
+  );
 }
 
 function Badge({
@@ -114,8 +173,17 @@ function Dialog({
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
-    if (open) window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    if (open) {
+      window.addEventListener("keydown", onKey);
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [open, onClose]);
 
   if (!open) return null;
@@ -127,47 +195,39 @@ function Dialog({
     >
       <div
         className="
-            w-full bg-white shadow-xl ring-1 ring-black/5
-            sm:max-w-3xl sm:rounded-2xl
-            h-[92vh] sm:h-auto
-            rounded-2xl
-            overflow-hidden
-        "
+      relative
+      w-full bg-white shadow-xl ring-1 ring-black/5
+      sm:max-w-3xl sm:rounded-2xl
+      h-[92vh] sm:h-auto
+      rounded-2xl
+      overflow-hidden
+    "
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-zinc-100 p-5">
-          <div>
-            <h3 className="text-base font-semibold text-zinc-900">{title}</h3>
-            <p className="mt-1 text-sm text-zinc-500">Detailed view</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="rounded-full p-2 text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
-            aria-label="Close"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="p-5 overflow-y-auto h-[calc(92vh-84px)] sm:h-auto">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="
+        absolute right-4 top-4
+        inline-flex h-9 w-9 items-center justify-center
+        rounded-full
+        text-zinc-500
+        hover:bg-zinc-100 hover:text-zinc-900
+        focus:outline-none focus:ring-2 focus:ring-zinc-400/30
+        active:scale-95
+      "
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* Scrollable content */}
+        <div className="p-5 pt-14 overflow-y-auto h-[calc(92vh-56px)] sm:h-auto">
           {children}
         </div>
       </div>
     </div>
   );
-}
-
-function KeyValue({ k, v }: { k: string; v: React.ReactNode }) {
-  return (
-    <div className="grid grid-cols-12 gap-3 py-3">
-      <div className="col-span-4 text-sm font-medium text-zinc-600">{k}</div>
-      <div className="col-span-8 text-sm text-zinc-900">{v}</div>
-    </div>
-  );
-}
-
-function isProbablyMobile() {
-  if (typeof navigator === "undefined") return false;
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
 function CallButton({
@@ -178,37 +238,50 @@ function CallButton({
   providerName: string;
 }) {
   const [open, setOpen] = React.useState(false);
-  const mobile = isProbablyMobile();
-
+  const isMobile = useMediaQuery("(max-width: 640px)");
   const telHref = formatPhoneHref(phone);
 
   async function copy() {
     await navigator.clipboard.writeText(phone);
   }
 
-  function stop(e: React.SyntheticEvent) {
-    e.preventDefault?.();
+  function stopPropagationOnly(e: React.SyntheticEvent) {
     e.stopPropagation();
   }
 
-  return mobile ? (
-    <a
-      className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
-      href={telHref}
-      onClick={(e) => stop(e)}
-    >
-      <Phone className="h-4 w-4" />
-      Call
-    </a>
-  ) : (
+  function stopAll(e: React.SyntheticEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  // ─────────────────────────────────────────────
+  // MOBILE: direct call (no dialog)
+  // ─────────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <a
+        href={telHref}
+        onClick={(e) => stopPropagationOnly(e)}
+        className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 active:scale-[0.99]"
+      >
+        <Phone className="h-4 w-4" />
+        Call
+      </a>
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // DESKTOP: open dialog
+  // ─────────────────────────────────────────────
+  return (
     <>
       <button
-        onMouseDown={(e) => stop(e)}
+        onMouseDown={(e) => stopAll(e)}
         onClick={(e) => {
-          stop(e);
+          stopAll(e);
           setOpen(true);
         }}
-        className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+        className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50 active:scale-[0.99]"
       >
         <Phone className="h-4 w-4" />
         Call
@@ -216,17 +289,10 @@ function CallButton({
 
       <Dialog
         open={open}
-        onClose={(e?: any) => {
-          if (e?.stopPropagation) stop(e);
-          setOpen(false);
-        }}
+        onClose={() => setOpen(false)}
         title={`Call ${providerName}`}
       >
-        <div
-          className="space-y-4"
-          onMouseDown={(e) => stop(e)}
-          onClick={(e) => stop(e)}
-        >
+        <div className="space-y-4">
           <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
             <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
               Phone number
@@ -238,15 +304,14 @@ function CallButton({
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
-              onClick={async () => {
-                await copy();
-              }}
+              onClick={copy}
               className="inline-flex items-center justify-center rounded-2xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
             >
               Copy number
             </button>
 
             <a
+              onClick={(e) => stopPropagationOnly(e)}
               href={telHref}
               className="inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
               title="May open FaceTime/Skype/phone app depending on your computer"
@@ -848,74 +913,229 @@ export function ProvidersTable({ data }: { data: Provider[] }) {
         title={selected?.["Provider Name"] ?? "Provider"}
       >
         {selected ? (
-          <div className="divide-y divide-zinc-100">
-            <KeyValue
-              k="System / Network"
-              v={selected["System / Network Name"]}
-            />
-            <KeyValue k="Organization Type" v={selected["Organization Type"]} />
-            <KeyValue
-              k="Website"
-              v={
-                <a
-                  className="text-zinc-900 underline underline-offset-4"
-                  href={selected["Website URL"]}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {selected["Website URL"]}
-                </a>
-              }
-            />
-            <KeyValue k="Address" v={selected["Address"]} />
-            <KeyValue k="Phone" v={selected["Phone number"]} />
-            <KeyValue k="Categories" v={selected["Categories"]} />
-            <KeyValue k="Services offered" v={selected["Services offered"]} />
-            <KeyValue k="Primary Audience" v={selected["Primary Audience"]} />
-            <KeyValue
-              k="Languages"
-              v={selected["Languages Offered (clinical)"]}
-            />
-            <KeyValue
-              k="Access"
-              v={
-                <div className="flex flex-wrap gap-2">
-                  <Badge
-                    tone={
-                      ynTone(
-                        selected[
-                          "Availability of Professional Interpreters (Y/N)"
-                        ],
-                      ) as any
-                    }
+          <div className="space-y-4">
+            {/* Top summary card */}
+            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <div className="text-lg font-semibold text-zinc-900 truncate">
+                    {selected["Provider Name"]}
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-600">
+                    {selected["System / Network Name"] ? (
+                      <span className="inline-flex items-center gap-1">
+                        <Building2 className="h-4 w-4" />
+                        <span className="truncate">
+                          {selected["System / Network Name"]}
+                        </span>
+                      </span>
+                    ) : null}
+                    {selected["Organization Type"] ? (
+                      <span className="inline-flex items-center gap-1">
+                        <ShieldCheck className="h-4 w-4" />
+                        {selected["Organization Type"]}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+
+                {/* Rating pill */}
+                <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900">
+                  <Star className="h-4 w-4" />
+                  <span>
+                    {parseRating(selected["Customer review rating"]) ?? "—"}
+                  </span>
+                  <span className="text-zinc-500 font-normal">rating</span>
+                </div>
+              </div>
+
+              {/* Quick actions */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {selected["Website URL"] ? (
+                  <ActionButton
+                    href={selected["Website URL"]}
+                    icon={<Globe className="h-4 w-4" />}
                   >
-                    Interpreters:{" "}
-                    {
+                    Website
+                  </ActionButton>
+                ) : null}
+
+                {selected["Phone number"] &&
+                selected["Phone number"] !== "N/A" ? (
+                  <>
+                    {/* Reuse your existing CallButton (opens your nicer call dialog) */}
+                    <CallButton
+                      phone={selected["Phone number"]}
+                      providerName={selected["Provider Name"]}
+                    />
+                    <ActionButton
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(
+                          selected["Phone number"],
+                        );
+                      }}
+                      icon={<Copy className="h-4 w-4" />}
+                    >
+                      Copy phone
+                    </ActionButton>
+                  </>
+                ) : null}
+
+                {selected["Address"] ? (
+                  <ActionButton
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      selected["Address"],
+                    )}`}
+                    icon={<MapPin className="h-4 w-4" />}
+                  >
+                    Directions
+                  </ActionButton>
+                ) : null}
+              </div>
+            </div>
+
+            {/* Grid sections */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Section title="Location" icon={<MapPin className="h-4 w-4" />}>
+                {selected["Address"] ? (
+                  <div className="text-sm text-zinc-800">
+                    {selected["Address"]}
+                  </div>
+                ) : (
+                  <div className="text-sm text-zinc-500">
+                    No address listed.
+                  </div>
+                )}
+              </Section>
+
+              <Section title="Contact" icon={<Phone className="h-4 w-4" />}>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-zinc-500">Phone</div>
+                    <div className="font-medium text-zinc-900">
+                      {selected["Phone number"] || "—"}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-zinc-500">Website</div>
+                    {selected["Website URL"] ? (
+                      <a
+                        className="font-medium text-zinc-900 underline underline-offset-4 truncate max-w-[220px]"
+                        href={selected["Website URL"]}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Open
+                      </a>
+                    ) : (
+                      <div className="font-medium text-zinc-900">—</div>
+                    )}
+                  </div>
+                </div>
+              </Section>
+
+              <Section
+                title="Care & services"
+                icon={<Stethoscope className="h-4 w-4" />}
+              >
+                <div className="space-y-3">
+                  {selected["Services offered"] ? (
+                    <div className="text-sm text-zinc-800 whitespace-pre-wrap">
+                      {selected["Services offered"]}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-zinc-500">
+                      No services listed.
+                    </div>
+                  )}
+
+                  {selected["Categories"] ? (
+                    <div className="text-sm text-zinc-600">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                        Categories
+                      </div>
+                      <div className="mt-1 text-zinc-800">
+                        {selected["Categories"]}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </Section>
+
+              <Section
+                title="Audience & languages"
+                icon={<Users className="h-4 w-4" />}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2">
+                    <Users className="h-4 w-4 mt-0.5 text-zinc-500" />
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                        Primary audience
+                      </div>
+                      <div className="mt-1 text-sm text-zinc-800">
+                        {selected["Primary Audience"] || "—"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <Languages className="h-4 w-4 mt-0.5 text-zinc-500" />
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                        Languages (clinical)
+                      </div>
+                      <div className="mt-1 text-sm text-zinc-800">
+                        {selected["Languages Offered (clinical)"] || "—"}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Section>
+            </div>
+
+            {/* Access chips */}
+            <Section
+              title="Access & support"
+              icon={<ShieldCheck className="h-4 w-4" />}
+            >
+              <div className="flex flex-wrap gap-2">
+                <Badge
+                  tone={
+                    ynTone(
                       selected[
                         "Availability of Professional Interpreters (Y/N)"
-                      ]
-                    }
-                  </Badge>
-                  <Badge tone={ynTone(selected["Telehealth (Y/N)"]) as any}>
-                    Telehealth: {selected["Telehealth (Y/N)"]}
-                  </Badge>
-                  <Badge
-                    tone={ynTone(selected["Financial Assistance (Y/N)"]) as any}
-                  >
-                    Financial Assistance:{" "}
-                    {selected["Financial Assistance (Y/N)"]}
-                  </Badge>
-                  <Badge tone={ynTone(selected["Transportation (Y/N)"]) as any}>
-                    Transportation: {selected["Transportation (Y/N)"]}
-                  </Badge>
+                      ],
+                    ) as any
+                  }
+                >
+                  Interpreters:{" "}
+                  {selected[
+                    "Availability of Professional Interpreters (Y/N)"
+                  ] || "—"}
+                </Badge>
+                <Badge tone={ynTone(selected["Telehealth (Y/N)"]) as any}>
+                  Telehealth: {selected["Telehealth (Y/N)"] || "—"}
+                </Badge>
+                <Badge
+                  tone={ynTone(selected["Financial Assistance (Y/N)"]) as any}
+                >
+                  Financial Aid: {selected["Financial Assistance (Y/N)"] || "—"}
+                </Badge>
+                <Badge tone={ynTone(selected["Transportation (Y/N)"]) as any}>
+                  Transportation: {selected["Transportation (Y/N)"] || "—"}
+                </Badge>
+              </div>
+            </Section>
+
+            {/* Notes */}
+            {selected["Notes for Indian / South Asian Patients"] ? (
+              <Section title="Notes" icon={<StickyNote className="h-4 w-4" />}>
+                <div className="text-sm text-zinc-800 whitespace-pre-wrap">
+                  {selected["Notes for Indian / South Asian Patients"]}
                 </div>
-              }
-            />
-            <KeyValue
-              k="Notes (South Asian)"
-              v={selected["Notes for Indian / South Asian Patients"]}
-            />
-            <KeyValue k="Rating" v={selected["Customer review rating"]} />
+              </Section>
+            ) : null}
           </div>
         ) : null}
       </Dialog>
