@@ -76,7 +76,7 @@ export default function ProvidersSearchPageClient({
               className="
                   w-full
                   rounded-3xl sm:rounded-full
-                  bg-white/30 p-2
+                  bg-white/90 p-2
                   shadow-xl ring-1 ring-black/5
                 "
             >
