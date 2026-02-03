@@ -6,6 +6,7 @@ import { MapPin, Search } from "lucide-react";
 import type { Provider } from "../lib/providers";
 import { ProvidersTable } from "./ProvidersTable";
 import { BackgroundShell } from "./BackgroundShell";
+import { TopNavbar } from "./TopNavBar";
 
 export default function ProvidersSearchPageClient({
   data,
@@ -66,15 +67,16 @@ export default function ProvidersSearchPageClient({
 
   return (
     <BackgroundShell>
+      <TopNavbar />
       <div className="px-4 pt-4 mx-auto max-w-[1440px]">
-        <div className="rounded-3xl bg-white/70 shadow-lg ring-1 ring-black/5 backdrop-blur-md">
+        <div className="rounded-3xl bg-white/60 shadow-lg ring-1 ring-black/5 backdrop-blur-md">
           <div className="flex flex-col gap-3 p-3 sm:p-4">
             <form
               onSubmit={submitCombined}
               className="
                   w-full
                   rounded-3xl sm:rounded-full
-                  bg-white p-2
+                  bg-white/30 p-2
                   shadow-xl ring-1 ring-black/5
                 "
             >
@@ -171,7 +173,7 @@ export default function ProvidersSearchPageClient({
       </div>
 
       <div className="px-4 pb-10 pt-4 sm:pt-6 mx-auto max-w-[1440px]">
-        <div className="rounded-3xl bg-white/90 shadow-xl ring-1 ring-black/5 backdrop-blur-md p-3 sm:p-4">
+        <div className="rounded-3xl bg-white/40 shadow-xl ring-1 ring-black/5 backdrop-blur-md p-3 sm:p-4">
           <ProvidersTable
             data={data}
             initialQuery={combinedQuery}

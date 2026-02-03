@@ -12,6 +12,7 @@ import type { Provider } from "../lib/providers";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { BackgroundShell } from "./BackgroundShell";
+import { TopNavbar } from "./TopNavBar";
 
 function buildTopCategoryChips(data: Provider[], limit = 10) {
   const counts = new Map<string, number>();
@@ -80,67 +81,7 @@ export default function ProvidersExperience({
 
   return (
     <BackgroundShell>
-      <div className="relative z-20 px-4 pt-4 sm:pt-6">
-        <div
-          className="
-            mx-auto
-            w-full max-w-3xl
-            rounded-full
-            border border-white/20
-            bg-white/70
-            px-4 py-2
-            shadow-lg
-            backdrop-blur-md
-          "
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-2">
-              <Image
-                src="/logo.png"
-                alt="Care Finder Logo"
-                height={32}
-                width={32}
-                className="h-8 w-8 shrink-0"
-              />
-              <div className="hidden sm:flex min-w-0 flex-col text-xs font-semibold text-[#415d43] leading-tight">
-                <span className="truncate">Community</span>
-                <span className="truncate">Wellness Collective</span>
-              </div>
-            </div>
-
-            <nav className="hidden sm:flex items-center gap-4 text-sm font-medium text-[#415d43]/80">
-              <a className="hover:text-[#415d43]" href="#">
-                Home
-              </a>
-              <a className="hover:text-[#415d43]" href="#">
-                Resources
-              </a>
-              <a className="hover:text-[#415d43]" href="#">
-                About
-              </a>
-            </nav>
-
-            {/* <button
-              type="button"
-              onClick={() => goToSearch("")}
-              className="
-                inline-flex items-center gap-2
-                rounded-full bg-[#709775]
-                px-4 py-2
-                text-sm font-medium text-white
-                shadow-sm
-                hover:bg-[#5f8762]
-                active:scale-[0.98]
-                whitespace-nowrap
-              "
-            >
-              <Compass className="h-4 w-4" />
-              Browse
-            </button> */}
-          </div>
-        </div>
-      </div>
-
+      <TopNavbar />
       <div className="relative z-10 px-4 pb-10 pt-10 sm:px-10 sm:pb-16 sm:pt-14">
         <div className="mx-auto w-full max-w-4xl text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-[#415d43]/85 ring-1 ring-white/15">
@@ -162,7 +103,7 @@ export default function ProvidersExperience({
             className="
               mx-auto mt-7 w-full max-w-4xl
               rounded-3xl sm:rounded-full
-              bg-white p-2
+              bg-white/90 p-2
               shadow-xl ring-1 ring-black/5
             "
           >
@@ -216,7 +157,7 @@ export default function ProvidersExperience({
                   px-6 py-3
                   text-sm font-semibold text-white
                   shadow-sm
-                  hover:bg-[#5f8762]
+                  hover:bg-[#5a7f63]
                   active:scale-[0.99]
                   w-full sm:w-auto
                   disabled:opacity-70

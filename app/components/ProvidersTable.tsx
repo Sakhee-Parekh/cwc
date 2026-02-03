@@ -362,7 +362,7 @@ function CallButton({
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
               onClick={copy}
-              className="inline-flex items-center justify-center rounded-2xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+              className="inline-flex items-center justify-center rounded-2xl bg-[#709775] px-4 py-2 text-sm font-medium text-white hover:bg-[#5a7f63]"
             >
               Copy number
             </button>
@@ -554,7 +554,7 @@ function ProviderCard({
 
   return (
     <div
-      className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm active:scale-[0.99]"
+      className="rounded-2xl border border-zinc-200 bg-white/60 p-4 shadow-sm active:scale-[0.99]"
       onClick={() => onOpen(p)}
       role="button"
       tabIndex={0}
@@ -632,7 +632,7 @@ function ProviderCard({
           <a
             href={formatPhoneHref(phone)}
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#709775] px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
           >
             <Phone className="h-4 w-4" />
             Call
@@ -771,7 +771,7 @@ export function ProvidersTable({
             )}
             <button
               onClick={() => exportRowsToCSV(filteredRows)}
-              className="inline-flex items-center justify-center rounded-2xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
+              className="inline-flex items-center justify-center rounded-2xl bg-[#709775] px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#5a7f63]"
             >
               Export filtered
             </button>
@@ -781,7 +781,7 @@ export function ProvidersTable({
 
       {/* Column menu */}
       {columnsOpen ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-zinc-200 bg-white/60 p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="text-sm font-semibold text-zinc-900">Columns</div>
             <button
@@ -798,7 +798,7 @@ export function ProvidersTable({
               return (
                 <label
                   key={id}
-                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 hover:bg-zinc-50"
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-200 bg-white/60 px-3 py-2 text-sm text-zinc-800 hover:bg-zinc-50"
                 >
                   <input
                     type="checkbox"
@@ -826,7 +826,7 @@ export function ProvidersTable({
           ))}
 
           {visibleProviders.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6 text-sm text-zinc-500 shadow-sm">
+            <div className="rounded-2xl border border-zinc-200 bg-white/60 p-6 text-sm text-zinc-500 shadow-sm">
               No matches. Try adjusting your search.
             </div>
           ) : null}
@@ -872,10 +872,10 @@ export function ProvidersTable({
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm">
-          <div className="max-h-[58vh] overflow-auto">
-            <table className="w-full border-separate border-spacing-0">
-              <thead className="sticky top-0 z-10 bg-white">
+        <div className="rounded-2xl border bg-white/60 border-zinc-200 shadow-sm">
+          <div className="max-h-[49vh] overflow-auto rounded-2xl">
+            <table className="w-full border-separate border-spacing-0 rounded-2xl ">
+              <thead className="sticky top-0 z-10 bg-[#cad2c5]">
                 {table.getHeaderGroups().map((hg) => (
                   <tr key={hg.id}>
                     {hg.headers.map((header) => {
@@ -918,7 +918,7 @@ export function ProvidersTable({
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="group cursor-pointer hover:bg-zinc-50 pointer-events-auto"
+                    className="group cursor-pointer hover:bg-[#a1cca5]/10 pointer-events-auto"
                     onClick={() => setSelected(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
