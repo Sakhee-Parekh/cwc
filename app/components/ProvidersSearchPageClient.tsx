@@ -91,7 +91,7 @@ export default function ProvidersSearchPageClient({
                     value={what}
                     disabled={isSearching}
                     onChange={(e) => setWhat(e.target.value)}
-                    placeholder='How can we help? (for example "therapy" or "support group")'
+                    placeholder='How can we help? (for example "therapy")'
                     className="cwc-input min-h-14 rounded-[1.35rem] py-4 pl-[3.25rem] pr-4 text-[0.96rem] lg:rounded-full"
                   />
                 </div>

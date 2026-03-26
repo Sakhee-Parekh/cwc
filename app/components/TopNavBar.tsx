@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function TopNavbar() {
+  const pathname = usePathname();
+  const isAssistant = pathname?.startsWith("/assistant");
+
   return (
     <div className="relative z-20">
       <div className="mx-auto flex w-full max-w-[1300px] items-center justify-between gap-4 px-4 py-5 sm:px-8 sm:py-6">
@@ -28,26 +32,35 @@ export function TopNavbar() {
           </div>
         </Link>
 
-        <div className="hidden items-center gap-5 lg:flex">
-          {/* <nav className="flex items-center gap-7 text-[0.95rem] font-medium text-[var(--foreground)]">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors duration-150 hover:text-[var(--accent)]"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav> */}
+        <div className="flex items-center gap-3 sm:gap-5">
+          <nav className="flex rounded-full border border-[var(--sage-medium)] bg-[var(--sage-light)] p-1.5 shadow-[0_14px_34px_rgba(79,118,97,0.14)]">
+            <Link
+              href="/"
+              className={`rounded-full px-4 py-2.5 text-sm font-semibold transition sm:px-5 ${
+                isAssistant
+                  ? "bg-transparent text-[var(--foreground)] hover:text-[var(--accent)]"
+                  : "bg-[var(--accent)] !text-white shadow-[0_10px_24px_rgba(79,118,97,0.22)]"
+              }`}
+            >
+              Directory
+            </Link>
+            <Link
+              href="/assistant"
+              className={`rounded-full px-4 py-2.5 text-sm font-semibold transition sm:px-5 ${
+                isAssistant
+                  ? "bg-[var(--accent)] !text-white shadow-[0_10px_24px_rgba(79,118,97,0.22)]"
+                  : "bg-transparent text-[var(--foreground)] hover:text-[var(--accent)]"
+              }`}
+            >
+              Ask CWC
+            </Link>
+          </nav>
 
           <a
             href="https://mycwc.org/"
             target="_blank"
             rel="noopener noreferrer"
-            className="cwc-button-primary inline-flex items-center rounded-full px-4 py-2 text-sm font-medium"
+            className="inline-flex items-center rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-[var(--foreground)] transition hover:border-[var(--border-strong)] hover:text-[var(--accent)]"
           >
             Visit mycwc.org
           </a>
