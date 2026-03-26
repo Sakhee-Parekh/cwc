@@ -665,10 +665,12 @@ function ProviderCard({
 export function ProvidersTable({
   data,
   initialQuery,
+  onFilteredCountChange,
   showSearch = true,
 }: {
   data: Provider[];
   initialQuery?: string;
+  onFilteredCountChange?: (count: number) => void;
   showSearch?: boolean;
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -741,6 +743,12 @@ export function ProvidersTable({
     },
     initialState: { pagination: { pageSize: 10 } },
   });
+
+  const filteredCount = table.getFilteredRowModel().rows.length;
+
+  React.useEffect(() => {
+    onFilteredCountChange?.(filteredCount);
+  }, [filteredCount, onFilteredCountChange]);
 
   const visibleProviders = table.getRowModel().rows.map((r) => r.original);
   const filteredRows = table.getFilteredRowModel().rows.map((r) => r.original);

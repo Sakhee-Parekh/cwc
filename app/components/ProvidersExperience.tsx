@@ -45,7 +45,6 @@ export default function ProvidersExperience({
 
   const quickChips = React.useMemo(() => {
     const access = [
-      "Telehealth",
       "Financial Assistance",
       "Transportation",
       "Interpreters",
@@ -144,9 +143,9 @@ export default function ProvidersExperience({
           </div>
 
           <div className="mx-auto mt-8 max-w-[1080px]">
-            <div className="mb-3 text-center text-sm font-medium text-[var(--foreground)]">
+            {/* <div className="mb-3 pl-2 text-left text-sm font-medium text-[var(--foreground)]">
               Popular searches
-            </div>
+            </div> */}
             <div
               className="
                 flex gap-2 overflow-x-auto pb-2 sm:justify-center

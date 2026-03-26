@@ -252,21 +252,9 @@ export default function AssistantExperience() {
                   </button>
                 ))}
               </div>
-
-              <div className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-[var(--sage-light)] p-4 text-sm leading-6 text-[var(--foreground)]">
-                <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-                  What this can help with
-                </div>
-                <p className="mt-3">
-                  Ask CWC can help you think through support options, prepare
-                  for provider or family conversations, and decide what next
-                  steps may be helpful as you navigate care.
-                </p>
-              </div>
-
               <div className="mt-4 rounded-[1.5rem] border border-[var(--border)] bg-white p-4 text-sm leading-6 text-[var(--foreground)]">
                 <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-                  Good to know
+                  Note
                 </div>
                 <p className="mt-3 text-[var(--muted)]">
                   This space is meant to support exploration and planning, not
@@ -281,7 +269,7 @@ export default function AssistantExperience() {
             <section className="rounded-[2rem] cwc-panel-strong p-4 sm:p-5">
               <div
                 ref={scrollerRef}
-                className="max-h-[62vh] min-h-[50vh] space-y-4 overflow-y-auto pr-1"
+                className="h-[clamp(18rem,48vh,34rem)] space-y-4 overflow-y-auto pr-1 sm:h-[clamp(20rem,50vh,38rem)]"
               >
                 {messages.map((message) => (
                   <div
@@ -350,16 +338,10 @@ export default function AssistantExperience() {
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleInputKeyDown}
                     placeholder="Ask about support options, care navigation, talking to providers, or what to do next..."
-                    className="cwc-input min-h-32 resize-y rounded-[1.6rem] px-4 py-4 text-sm leading-7"
+                    className="cwc-input min-h-24 max-h-48 resize-y rounded-[1.6rem] px-4 py-4 text-sm leading-7 sm:min-h-28"
                   />
 
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm text-[var(--muted)]">
-                      {threadId
-                        ? "Conversation context is active for this session."
-                        : "A new conversation will start with your first message."}
-                    </div>
-
+                  <div className="flex items-center justify-end gap-3">
                     <button
                       type="submit"
                       disabled={isSending || !input.trim()}

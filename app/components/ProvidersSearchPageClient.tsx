@@ -24,6 +24,7 @@ export default function ProvidersSearchPageClient({
   const [what, setWhat] = React.useState(whatParam || "");
   const [where, setWhere] = React.useState(whereParam || "");
   const [isSearching, setIsSearching] = React.useState(false);
+  const [filteredCount, setFilteredCount] = React.useState(data.length);
 
   React.useEffect(() => {
     setWhat(whatParam || "");
@@ -32,6 +33,10 @@ export default function ProvidersSearchPageClient({
   React.useEffect(() => {
     setWhere(whereParam || "");
   }, [whereParam]);
+
+  React.useEffect(() => {
+    setFilteredCount(data.length);
+  }, [data.length]);
 
   function pushParams(nextWhat: string, nextWhere: string) {
     setIsSearching(true);
@@ -77,7 +82,7 @@ export default function ProvidersSearchPageClient({
               Search results
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)]">
-              Refine the directory below, then click on any provider for contact
+              Search the directory below, then click on any provider for contact
               details, care information, and access support.
             </p>
           </div>
@@ -128,6 +133,9 @@ export default function ProvidersSearchPageClient({
               <div>
                 {combinedQuery ? (
                   <>
+                    <span className="font-semibold text-[var(--foreground)]">
+                      {filteredCount}
+                    </span>{" "}
                     Results for{" "}
                     <span className="font-semibold text-[var(--foreground)]">
                       {combinedQuery}
@@ -138,6 +146,10 @@ export default function ProvidersSearchPageClient({
                     Showing{" "}
                     <span className="font-semibold text-[var(--foreground)]">
                       all providers
+                    </span>
+                    {" "}
+                    <span className="text-[var(--muted)]">
+                      ({filteredCount} total)
                     </span>
                   </>
                 )}
@@ -155,6 +167,7 @@ export default function ProvidersSearchPageClient({
           <ProvidersTable
             data={data}
             initialQuery={combinedQuery}
+            onFilteredCountChange={setFilteredCount}
             showSearch={false}
           />
         </div>
