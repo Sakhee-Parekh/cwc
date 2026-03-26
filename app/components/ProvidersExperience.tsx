@@ -27,11 +27,23 @@ function buildTopCategoryChips(data: Provider[], limit = 10) {
 
 export default function ProvidersExperience({
   data,
-  syncedLabel,
+  syncedAtISO,
 }: {
   data: Provider[];
-  syncedLabel: string;
+  syncedAtISO: string;
 }) {
+  const syncedLabel = React.useMemo(
+    () =>
+      new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(syncedAtISO)),
+    [syncedAtISO],
+  );
+
   const router = useRouter();
 
   const [what, setWhat] = React.useState("");

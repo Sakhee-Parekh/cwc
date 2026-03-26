@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BadgeQuestionMark, Bot, LoaderCircle, Send, Sparkles, UserRound } from "lucide-react";
+import { BadgeQuestionMark, Bot, LoaderCircle, Send, UserRound } from "lucide-react";
 import { BackgroundShell } from "./BackgroundShell";
 import { TopNavbar } from "./TopNavBar";
 

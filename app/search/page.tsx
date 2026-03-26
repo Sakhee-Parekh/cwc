@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default async function SearchPage(props: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { data, syncedLabel } = await getProvidersData();
+  const { data, syncedAtISO } = await getProvidersData();
 
   const sp = (await props.searchParams) ?? {};
 
@@ -20,7 +20,7 @@ export default async function SearchPage(props: {
     <ProvidersSearchPageClient
       key={`${what}__${where}`}
       data={data}
-      syncedLabel={syncedLabel}
+      syncedAtISO={syncedAtISO}
       whatParam={what}
       whereParam={where}
     />

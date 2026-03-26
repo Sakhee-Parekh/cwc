@@ -13,13 +13,6 @@ export const getProvidersData = cache(async () => {
   const data = parsed.data as Provider[];
 
   const syncedAtISO = new Date().toISOString();
-  const syncedLabel = new Date(syncedAtISO).toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
 
-  return { data, syncedLabel };
+  return { data, syncedAtISO };
 });

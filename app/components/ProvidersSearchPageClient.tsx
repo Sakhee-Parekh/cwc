@@ -10,16 +10,27 @@ import { TopNavbar } from "./TopNavBar";
 
 export default function ProvidersSearchPageClient({
   data,
-  syncedLabel,
+  syncedAtISO,
   whatParam,
   whereParam,
 }: {
   data: Provider[];
-  syncedLabel: string;
+  syncedAtISO: string;
   whatParam: string;
   whereParam: string;
 }) {
   const router = useRouter();
+  const syncedLabel = React.useMemo(
+    () =>
+      new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(new Date(syncedAtISO)),
+    [syncedAtISO],
+  );
 
   const [what, setWhat] = React.useState(whatParam || "");
   const [where, setWhere] = React.useState(whereParam || "");
