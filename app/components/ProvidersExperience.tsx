@@ -98,10 +98,8 @@ export default function ProvidersExperience({
             <h1 className="cwc-display mx-auto mt-6 max-w-5xl text-balance text-[2.9rem] leading-[0.95] text-[var(--foreground)] sm:text-[4.4rem]">
               Clear, Compassionate Guidance for your Cancer Journey.
             </h1>
-
             <p className="mx-auto mt-5 max-w-3xl text-pretty text-base leading-7 text-[var(--muted)] sm:text-lg">
-              Search by service, location, language, or access needs, then click on
-              any provider to call, copy contact info, or get directions.
+              A guided pathway through prevention, diagnosis, treatment, monitoring, and financial decisions. Wherever you are in the process, you do not have to navigate this journey alone.
             </p>
           </div>
 
