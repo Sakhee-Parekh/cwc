@@ -58,8 +58,6 @@ export default function ProvidersExperience({
   const quickChips = React.useMemo(() => {
     const access = [
       "Financial Assistance",
-      "Transportation",
-      "Interpreters",
     ];
     const merged = [...topCategories, ...access];
     return Array.from(new Set(merged)).slice(0, 14);

@@ -97,7 +97,6 @@ export default function ProvidersSearchPageClient({
               details, care information, and access support.
             </p>
           </div>
-
           <div className="mt-8 rounded-[2rem] cwc-panel-strong p-4 sm:p-5">
             <form onSubmit={submitCombined}>
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
