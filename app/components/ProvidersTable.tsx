@@ -20,6 +20,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   ExternalLink,
   Phone,
   Search,
@@ -927,8 +928,12 @@ export function ProvidersTable({
                               header.getContext(),
                             )}
                             {sortDir ? (
-                              <span className="text-[10px] text-[var(--muted)]">
-                                {sortDir === "asc" ? "▲" : "▼"}
+                              <span className="text-[var(--muted)]">
+                                {sortDir === "asc" ? (
+                                  <ChevronUp className="h-3.5 w-3.5" />
+                                ) : (
+                                  <ChevronDown className="h-3.5 w-3.5" />
+                                )}
                               </span>
                             ) : null}
                           </div>
