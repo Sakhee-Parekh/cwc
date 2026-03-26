@@ -308,7 +308,13 @@ export default function AssistantExperience() {
                       <div className="whitespace-pre-wrap text-sm leading-7 sm:text-[0.96rem]">
                         {message.status === "streaming" &&
                         message.content.length === 0 ? (
-                          <span className="inline-flex items-center gap-1 py-1 text-[var(--accent)]">
+                          <span
+                            className={`inline-flex items-center gap-1 py-1 ${
+                              message.role === "user"
+                                ? "text-[var(--accent)]"
+                                : "text-white"
+                            }`}
+                          >
                             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-current [animation-delay:0ms]" />
                             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-current [animation-delay:150ms]" />
                             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-current [animation-delay:300ms]" />
@@ -318,7 +324,13 @@ export default function AssistantExperience() {
                         )}
                         {message.status === "streaming" &&
                         message.content.length > 0 ? (
-                          <span className="ml-1 inline-block animate-pulse text-[var(--accent)]">
+                          <span
+                            className={`ml-1 inline-block animate-pulse ${
+                              message.role === "user"
+                                ? "text-[var(--accent)]"
+                                : "text-white"
+                            }`}
+                          >
                             |
                           </span>
                         ) : null}
