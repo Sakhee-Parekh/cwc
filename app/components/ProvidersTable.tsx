@@ -39,6 +39,11 @@ import {
 
 import type { Provider } from "../lib/providers";
 
+const secondaryButtonClass =
+  "cwc-button-secondary inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium active:scale-[0.99]";
+const primaryButtonClass =
+  "cwc-button-primary inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium active:scale-[0.99]";
+
 function useMediaQuery(query: string) {
   const [matches, setMatches] = React.useState(false);
 
@@ -64,18 +69,21 @@ function ActionButton({
   onClick?: () => void;
   href?: string;
 }) {
-  const cls =
-    "inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50 active:scale-[0.99]";
   if (href) {
     return (
-      <a className={cls} href={href} target="_blank" rel="noreferrer">
+      <a
+        className={secondaryButtonClass}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+      >
         {icon}
         {children}
       </a>
     );
   }
   return (
-    <button className={cls} onClick={onClick} type="button">
+    <button className={secondaryButtonClass} onClick={onClick} type="button">
       {icon}
       {children}
     </button>
@@ -92,10 +100,12 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-zinc-200 bg-white p-4">
+    <section className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-strong)] p-4 shadow-[0_12px_30px_rgba(45,39,31,0.06)]">
       <div className="flex items-center gap-2">
-        <span className="text-zinc-500">{icon}</span>
-        <h4 className="text-sm font-semibold text-zinc-900">{title}</h4>
+        <span className="text-[var(--accent)]">{icon}</span>
+        <h4 className="text-sm font-semibold text-[var(--foreground)]">
+          {title}
+        </h4>
       </div>
       <div className="mt-3">{children}</div>
     </section>
@@ -111,17 +121,17 @@ function Badge({
 }) {
   const styles =
     tone === "good"
-      ? "bg-emerald-50 text-emerald-700 ring-emerald-100"
+      ? "cwc-badge-good"
       : tone === "warn"
-        ? "bg-amber-50 text-amber-800 ring-amber-100"
+        ? "cwc-badge-warn"
         : tone === "info"
-          ? "bg-blue-50 text-blue-700 ring-blue-100"
-          : "bg-zinc-50 text-zinc-700 ring-zinc-100";
+          ? "cwc-badge-info"
+          : "cwc-badge";
 
   return (
     <span
       className={clsx(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
+        "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium",
         styles,
       )}
     >
@@ -130,7 +140,7 @@ function Badge({
   );
 }
 
-function ynTone(v: string) {
+function ynTone(v: string): "neutral" | "good" | "warn" | "info" {
   const val = (v || "").trim().toUpperCase();
   if (val === "Y") return "good";
   if (val === "N") return "warn";
@@ -244,10 +254,11 @@ function Dialog({
             position: "relative",
             width: "100%",
             maxWidth: 768,
-            background: "white",
-            borderRadius: 16,
+            background: "var(--surface-strong)",
+            border: "1px solid var(--border)",
+            borderRadius: 28,
             boxShadow:
-              "0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05)",
+              "0 25px 50px -12px rgba(27,23,18,0.22), 0 0 0 1px rgba(87,77,61,0.08)",
             overflow: "hidden",
             height: "92vh",
           }}
@@ -266,7 +277,7 @@ function Dialog({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#71717a",
+              color: "var(--muted)",
               background: "transparent",
               border: "none",
               cursor: "pointer",
@@ -322,7 +333,7 @@ function CallButton({
       <a
         href={telHref}
         onClick={(e) => stopPropagationOnly(e)}
-        className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 active:scale-[0.99]"
+        className={primaryButtonClass}
       >
         <Phone className="h-4 w-4" />
         Call
@@ -338,7 +349,7 @@ function CallButton({
           stopAll(e);
           setOpen(true);
         }}
-        className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50 active:scale-[0.99]"
+        className={secondaryButtonClass}
       >
         <Phone className="h-4 w-4" />
         Call
@@ -350,11 +361,11 @@ function CallButton({
         title={`Call ${providerName}`}
       >
         <div className="space-y-4">
-          <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
               Phone number
             </div>
-            <div className="mt-1 text-lg font-semibold text-zinc-900">
+            <div className="mt-1 text-lg font-semibold text-[var(--foreground)]">
               {phone}
             </div>
           </div>
@@ -362,7 +373,7 @@ function CallButton({
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
               onClick={copy}
-              className="inline-flex items-center justify-center rounded-2xl bg-[#709775] px-4 py-2 text-sm font-medium text-white hover:bg-[#5a7f63]"
+              className={primaryButtonClass}
             >
               Copy number
             </button>
@@ -370,14 +381,14 @@ function CallButton({
             <a
               onClick={(e) => stopPropagationOnly(e)}
               href={telHref}
-              className="inline-flex items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+              className={secondaryButtonClass}
               title="May open FaceTime/Skype/phone app depending on your computer"
             >
               Try calling from this device
             </a>
           </div>
 
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-[var(--muted)]">
             Tip: Paste the number into your phone dialer, or into an app like
             Google Voice if you use one.
           </p>
@@ -395,9 +406,9 @@ const columns: ColumnDef<Provider>[] = [
       const name = row.original["Provider Name"];
       const sys = row.original["System / Network Name"];
       return (
-        <div className="min-w-[280px]">
-          <div className="font-medium text-zinc-900">{name}</div>
-          <div className="mt-0.5 text-xs text-zinc-500">{sys}</div>
+        <div className="min-w-0 break-words">
+          <div className="font-medium text-[var(--foreground)]">{name}</div>
+          <div className="mt-0.5 text-xs text-[var(--muted)]">{sys}</div>
         </div>
       );
     },
@@ -442,14 +453,16 @@ const columns: ColumnDef<Provider>[] = [
     accessorKey: "Organization Type",
     header: "Type",
     cell: ({ getValue }) => (
-      <span className="text-sm text-zinc-800">{String(getValue() || "")}</span>
+      <span className="text-sm text-[color:var(--foreground)]">
+        {String(getValue() || "")}
+      </span>
     ),
   },
   {
     accessorKey: "Address",
     header: "Location",
     cell: ({ getValue }) => (
-      <div className="min-w-[280px] text-sm text-zinc-700">
+      <div className="min-w-0 break-words text-sm text-[color:var(--foreground)]">
         {String(getValue() || "")}
       </div>
     ),
@@ -461,9 +474,9 @@ const columns: ColumnDef<Provider>[] = [
       const r = parseRating(String(getValue() || ""));
       return (
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-50 px-2 py-0.5 text-xs font-medium text-zinc-700 ring-1 ring-inset ring-zinc-100">
+          <span className="cwc-badge inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium">
             <Star className="h-3.5 w-3.5" />
-            {r ?? "—"}
+            {r ?? "-"}
           </span>
         </div>
       );
@@ -485,20 +498,18 @@ const columns: ColumnDef<Provider>[] = [
         <div className="flex flex-wrap items-center gap-2">
           <Badge
             tone={
-              ynTone(
-                y("Availability of Professional Interpreters (Y/N)"),
-              ) as any
+              ynTone(y("Availability of Professional Interpreters (Y/N)"))
             }
           >
             Interpreters:{y("Availability of Professional Interpreters (Y/N)")}
           </Badge>
-          <Badge tone={ynTone(y("Telehealth (Y/N)")) as any}>
+          <Badge tone={ynTone(y("Telehealth (Y/N)"))}>
             Telehealth: {y("Telehealth (Y/N)")}
           </Badge>
-          <Badge tone={ynTone(y("Financial Assistance (Y/N)")) as any}>
+          <Badge tone={ynTone(y("Financial Assistance (Y/N)"))}>
             Financial Aid: {y("Financial Assistance (Y/N)")}
           </Badge>
-          <Badge tone={ynTone(y("Transportation (Y/N)")) as any}>
+          <Badge tone={ynTone(y("Transportation (Y/N)"))}>
             Transportation: {y("Transportation (Y/N)")}
           </Badge>
         </div>
@@ -512,9 +523,9 @@ const columns: ColumnDef<Provider>[] = [
       const url = row.original["Website URL"];
       const phone = row.original["Phone number"];
       return (
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <a
-            className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+            className={secondaryButtonClass}
             href={url}
             onClick={(e) => e.stopPropagation()}
             target="_blank"
@@ -554,24 +565,24 @@ function ProviderCard({
 
   return (
     <div
-      className="rounded-2xl border border-zinc-200 bg-white/60 p-4 shadow-sm active:scale-[0.99]"
+      className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_18px_36px_rgba(45,39,31,0.08)] active:scale-[0.99]"
       onClick={() => onOpen(p)}
       role="button"
       tabIndex={0}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="truncate text-base font-semibold text-zinc-900">
+          <div className="truncate text-base font-semibold text-[var(--foreground)]">
             {p["Provider Name"]}
           </div>
-          <div className="mt-0.5 truncate text-sm text-zinc-500">
+          <div className="mt-0.5 truncate text-sm text-[var(--muted)]">
             {p["System / Network Name"]}
           </div>
         </div>
 
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-zinc-50 px-2 py-1 text-xs font-medium text-zinc-700 ring-1 ring-inset ring-zinc-100">
+        <span className="cwc-badge inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium">
           <Star className="h-3.5 w-3.5" />
-          {rating ?? "—"}
+          {rating ?? "-"}
         </span>
       </div>
 
@@ -583,9 +594,9 @@ function ProviderCard({
         ))}
       </div>
 
-      <div className="mt-3 text-sm text-zinc-700">
+      <div className="mt-3 text-sm text-[color:var(--foreground)]">
         <div
-          className="text-sm text-zinc-700"
+          className="text-sm text-[color:var(--foreground)]"
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -599,19 +610,17 @@ function ProviderCard({
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Badge
-          tone={
-            ynTone(p["Availability of Professional Interpreters (Y/N)"]) as any
-          }
+          tone={ynTone(p["Availability of Professional Interpreters (Y/N)"])}
         >
           Interpreters:{p["Availability of Professional Interpreters (Y/N)"]}
         </Badge>
-        <Badge tone={ynTone(p["Telehealth (Y/N)"]) as any}>
+        <Badge tone={ynTone(p["Telehealth (Y/N)"])}>
           Telehealth: {p["Telehealth (Y/N)"]}
         </Badge>
-        <Badge tone={ynTone(p["Financial Assistance (Y/N)"]) as any}>
+        <Badge tone={ynTone(p["Financial Assistance (Y/N)"])}>
           Aid: {p["Financial Assistance (Y/N)"]}
         </Badge>
-        <Badge tone={ynTone(p["Transportation (Y/N)"]) as any}>
+        <Badge tone={ynTone(p["Transportation (Y/N)"])}>
           Transport: {p["Transportation (Y/N)"]}
         </Badge>
       </div>
@@ -622,7 +631,7 @@ function ProviderCard({
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+          className={`${secondaryButtonClass} flex-1`}
         >
           <ExternalLink className="h-4 w-4" />
           Website
@@ -632,7 +641,7 @@ function ProviderCard({
           <a
             href={formatPhoneHref(phone)}
             onClick={(e) => e.stopPropagation()}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#709775] px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
+            className={`${primaryButtonClass} flex-1`}
           >
             <Phone className="h-4 w-4" />
             Call
@@ -643,7 +652,7 @@ function ProviderCard({
               e.stopPropagation();
               onOpen(p);
             }}
-            className="inline-flex flex-1 items-center justify-center rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+            className={`${secondaryButtonClass} flex-1`}
           >
             Details
           </button>
@@ -742,19 +751,19 @@ export function ProvidersTable({
       {(showSearch || !isMobile) && (
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-900"></h1>
-            <p className="mt-1 text-sm text-zinc-500"></p>
+            <h1 className="cwc-display text-2xl text-[var(--foreground)]"></h1>
+            <p className="mt-1 text-sm text-[var(--muted)]"></p>
           </div>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             {showSearch && (
               <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
+                <Search className="pointer-events-none absolute left-4 top-3 h-4 w-4 text-[var(--accent)]" />
                 <input
                   value={globalFilter ?? ""}
                   onChange={(e) => setGlobalFilter(e.target.value)}
                   placeholder="Search providers, location, services..."
-                  className="w-full rounded-2xl border border-zinc-200 bg-white py-2 pl-10 pr-3 text-sm text-zinc-900 shadow-sm outline-none placeholder:text-zinc-400 focus:border-zinc-300 focus:ring-4 focus:ring-zinc-100 sm:w-[340px]"
+                  className="cwc-input w-full rounded-full py-2.5 pl-11 pr-4 text-sm sm:w-[340px]"
                 />
               </div>
             )}
@@ -762,16 +771,16 @@ export function ProvidersTable({
             {!isMobile && (
               <button
                 onClick={() => setColumnsOpen((v) => !v)}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm hover:bg-zinc-50"
+                className={secondaryButtonClass}
               >
                 <SlidersHorizontal className="h-4 w-4" />
                 Manage columns
-                <ChevronDown className="h-4 w-4 text-zinc-500" />
+                <ChevronDown className="h-4 w-4 text-[var(--muted)]" />
               </button>
             )}
             <button
               onClick={() => exportRowsToCSV(filteredRows)}
-              className="inline-flex items-center justify-center rounded-2xl bg-[#709775] px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#5a7f63]"
+              className={primaryButtonClass}
             >
               Export filtered
             </button>
@@ -781,12 +790,12 @@ export function ProvidersTable({
 
       {/* Column menu */}
       {columnsOpen ? (
-        <div className="rounded-2xl border border-zinc-200 bg-white/60 p-4 shadow-sm">
+        <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_16px_36px_rgba(45,39,31,0.08)]">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-semibold text-zinc-900">Columns</div>
+            <div className="text-sm font-semibold text-[var(--foreground)]">Columns</div>
             <button
               onClick={() => setColumnsOpen(false)}
-              className="rounded-full p-2 text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
+              className="rounded-full p-2 text-[var(--muted)] transition hover:bg-white/80 hover:text-[var(--foreground)]"
             >
               <X className="h-4 w-4" />
             </button>
@@ -798,11 +807,11 @@ export function ProvidersTable({
               return (
                 <label
                   key={id}
-                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-200 bg-white/60 px-3 py-2 text-sm text-zinc-800 hover:bg-zinc-50"
+                  className="flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--border)] bg-[var(--surface-strong)] px-3 py-2 text-sm text-[color:var(--foreground)] transition hover:bg-[var(--sage-light)]"
                 >
                   <input
                     type="checkbox"
-                    className="h-4 w-4"
+                    className="h-4 w-4 accent-[var(--accent)]"
                     checked={col.getIsVisible()}
                     onChange={col.getToggleVisibilityHandler()}
                   />
@@ -826,44 +835,44 @@ export function ProvidersTable({
           ))}
 
           {visibleProviders.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white/60 p-6 text-sm text-zinc-500 shadow-sm">
+            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6 text-sm text-[var(--muted)] shadow-[0_16px_36px_rgba(45,39,31,0.08)]">
               No matches. Try adjusting your search.
             </div>
           ) : null}
 
-          <div className="flex gap-3 border-t border-zinc-100 px-4 py-3 items-center justify-between">
-            <div className="text-sm text-zinc-500">
+          <div className="flex items-center justify-between gap-3 border-t border-[var(--border)] px-4 py-3">
+            <div className="text-sm text-[var(--muted)]">
               Showing{" "}
-              <span className="font-medium text-zinc-900">
+              <span className="font-medium text-[var(--foreground)]">
                 {table.getRowModel().rows.length}
               </span>{" "}
               of{" "}
-              <span className="font-medium text-zinc-900">{data.length}</span>
+              <span className="font-medium text-[var(--foreground)]">{data.length}</span>
             </div>
 
             <div className="flex items-center gap-2 whitespace-nowrap">
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm disabled:opacity-50"
+                className={`${secondaryButtonClass} disabled:opacity-50`}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Prev
               </button>
-              <div className="text-sm text-zinc-600">
+              <div className="text-sm text-[var(--muted)]">
                 Page{" "}
-                <span className="font-medium text-zinc-900">
+                <span className="font-medium text-[var(--foreground)]">
                   {table.getState().pagination.pageIndex + 1}
                 </span>{" "}
                 of{" "}
-                <span className="font-medium text-zinc-900">
+                <span className="font-medium text-[var(--foreground)]">
                   {table.getPageCount()}
                 </span>
               </div>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm disabled:opacity-50"
+                className={`${secondaryButtonClass} disabled:opacity-50`}
               >
                 Next
                 <ChevronRight className="h-4 w-4" />
@@ -872,23 +881,31 @@ export function ProvidersTable({
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border bg-white/60 border-zinc-200 shadow-sm">
-          <div className="max-h-[49vh] overflow-auto rounded-2xl">
-            <table className="w-full border-separate border-spacing-0 rounded-2xl ">
-              <thead className="sticky top-0 z-10 bg-[#cad2c5]">
+        <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] shadow-[0_18px_36px_rgba(45,39,31,0.08)]">
+          <div className="max-h-[49vh] overflow-y-auto overflow-x-hidden rounded-[1.75rem] max-[1199px]:overflow-x-auto">
+            <table className="w-full border-separate border-spacing-0 rounded-[1.75rem] table-fixed max-[1199px]:min-w-[1200px] max-[1199px]:table-auto">
+              <thead className="sticky top-0 z-10 bg-[var(--sage-medium)]">
                 {table.getHeaderGroups().map((hg) => (
                   <tr key={hg.id}>
                     {hg.headers.map((header) => {
                       const canSort = header.column.getCanSort();
                       const sortDir = header.column.getIsSorted();
+                      const columnId = header.column.id;
 
                       return (
                         <th
                           key={header.id}
                           className={clsx(
-                            "border-b border-zinc-100 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500",
+                            "border-b border-[var(--border)] px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted)]",
+                            columnId === "Provider Name" && "w-[22%]",
+                            columnId === "Categories" && "w-[18%]",
+                            columnId === "Organization Type" && "w-[10%]",
+                            columnId === "Address" && "w-[17%]",
+                            columnId === "Customer review rating" && "w-[7%]",
+                            columnId === "Access" && "w-[15%]",
+                            columnId === "actions" && "w-[11%]",
                             canSort &&
-                              "cursor-pointer select-none hover:text-zinc-700",
+                              "cursor-pointer select-none hover:text-[var(--foreground)]",
                           )}
                           onClick={
                             canSort
@@ -902,7 +919,7 @@ export function ProvidersTable({
                               header.getContext(),
                             )}
                             {sortDir ? (
-                              <span className="text-[10px] text-zinc-400">
+                              <span className="text-[10px] text-[var(--muted)]">
                                 {sortDir === "asc" ? "▲" : "▼"}
                               </span>
                             ) : null}
@@ -918,13 +935,13 @@ export function ProvidersTable({
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="group cursor-pointer hover:bg-[#a1cca5]/10 pointer-events-auto"
+                    className="group pointer-events-auto cursor-pointer transition hover:bg-[var(--sage-light)]"
                     onClick={() => setSelected(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        className="border-b border-zinc-100 px-4 py-3 align-top text-sm text-zinc-800"
+                        className="border-b border-[var(--border)] px-4 py-3 align-top text-sm text-[color:var(--foreground)] whitespace-normal"
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -938,7 +955,7 @@ export function ProvidersTable({
                 {table.getRowModel().rows.length === 0 ? (
                   <tr>
                     <td
-                      className="px-4 py-10 text-center text-sm text-zinc-500"
+                      className="px-4 py-10 text-center text-sm text-[var(--muted)]"
                       colSpan={999}
                     >
                       No matches. Try adjusting your search.
@@ -950,39 +967,39 @@ export function ProvidersTable({
           </div>
 
           {/* Footer */}
-          <div className="flex flex-col gap-3 border-t border-zinc-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm text-zinc-500">
+          <div className="flex flex-col gap-3 border-t border-[var(--border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-sm text-[var(--muted)]">
               Showing{" "}
-              <span className="font-medium text-zinc-900">
+              <span className="font-medium text-[var(--foreground)]">
                 {table.getRowModel().rows.length}
               </span>{" "}
               of{" "}
-              <span className="font-medium text-zinc-900">{data.length}</span>
+              <span className="font-medium text-[var(--foreground)]">{data.length}</span>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm disabled:opacity-50"
+                className={`${secondaryButtonClass} disabled:opacity-50`}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Prev
               </button>
-              <div className="text-sm text-zinc-600">
+              <div className="text-sm text-[var(--muted)]">
                 Page{" "}
-                <span className="font-medium text-zinc-900">
+                <span className="font-medium text-[var(--foreground)]">
                   {table.getState().pagination.pageIndex + 1}
                 </span>{" "}
                 of{" "}
-                <span className="font-medium text-zinc-900">
+                <span className="font-medium text-[var(--foreground)]">
                   {table.getPageCount()}
                 </span>
               </div>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 shadow-sm disabled:opacity-50"
+                className={`${secondaryButtonClass} disabled:opacity-50`}
               >
                 Next
                 <ChevronRight className="h-4 w-4" />
@@ -1000,13 +1017,13 @@ export function ProvidersTable({
       >
         {selected ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <div className="text-lg font-semibold text-zinc-900 flex-wrap">
+                  <div className="cwc-display flex-wrap text-lg text-[var(--foreground)]">
                     {selected["Provider Name"]}
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-600">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[var(--muted)]">
                     {selected["System / Network Name"] ? (
                       <span className="inline-flex items-center gap-1">
                         <div className="h-4 w-4">
@@ -1028,12 +1045,12 @@ export function ProvidersTable({
                   </div>
                 </div>
 
-                <div className="inline-flex w-fit items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900">
+                <div className="cwc-badge inline-flex w-fit items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium">
                   <Star className="h-4 w-4" />
                   <span>
-                    {parseRating(selected["Customer review rating"]) ?? "—"}
+                    {parseRating(selected["Customer review rating"]) ?? "-"}
                   </span>
-                  <span className="text-zinc-500 font-normal">rating</span>
+                  <span className="font-normal text-[var(--muted)]">rating</span>
                 </div>
               </div>
 
@@ -1083,11 +1100,11 @@ export function ProvidersTable({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Section title="Location" icon={<MapPin className="h-4 w-4" />}>
                 {selected["Address"] ? (
-                  <div className="text-sm text-zinc-800">
+                  <div className="text-sm text-[color:var(--foreground)]">
                     {selected["Address"]}
                   </div>
                 ) : (
-                  <div className="text-sm text-zinc-500">
+                  <div className="text-sm text-[var(--muted)]">
                     No address listed.
                   </div>
                 )}
@@ -1096,16 +1113,16 @@ export function ProvidersTable({
               <Section title="Contact" icon={<Phone className="h-4 w-4" />}>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-zinc-500">Phone</div>
-                    <div className="font-medium text-zinc-900">
-                      {selected["Phone number"] || "—"}
+                    <div className="text-[var(--muted)]">Phone</div>
+                    <div className="font-medium text-[var(--foreground)]">
+                      {selected["Phone number"] || "-"}
                     </div>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <div className="text-zinc-500">Website</div>
+                    <div className="text-[var(--muted)]">Website</div>
                     {selected["Website URL"] ? (
                       <a
-                        className="font-medium text-zinc-900 underline underline-offset-4 truncate max-w-[220px]"
+                        className="max-w-[220px] truncate font-medium text-[var(--foreground)] underline underline-offset-4"
                         href={selected["Website URL"]}
                         target="_blank"
                         rel="noreferrer"
@@ -1113,7 +1130,7 @@ export function ProvidersTable({
                         Open
                       </a>
                     ) : (
-                      <div className="font-medium text-zinc-900">—</div>
+                      <div className="font-medium text-[var(--foreground)]">-</div>
                     )}
                   </div>
                 </div>
@@ -1125,21 +1142,21 @@ export function ProvidersTable({
               >
                 <div className="space-y-3">
                   {selected["Services offered"] ? (
-                    <div className="text-sm text-zinc-800 whitespace-pre-wrap">
+                    <div className="whitespace-pre-wrap text-sm text-[color:var(--foreground)]">
                       {selected["Services offered"]}
                     </div>
                   ) : (
-                    <div className="text-sm text-zinc-500">
+                    <div className="text-sm text-[var(--muted)]">
                       No services listed.
                     </div>
                   )}
 
                   {selected["Categories"] ? (
-                    <div className="text-sm text-zinc-600">
-                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    <div className="text-sm text-[var(--muted)]">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
                         Categories
                       </div>
-                      <div className="mt-1 text-zinc-800">
+                      <div className="mt-1 text-[color:var(--foreground)]">
                         {selected["Categories"]}
                       </div>
                     </div>
@@ -1153,27 +1170,27 @@ export function ProvidersTable({
               >
                 <div className="space-y-3">
                   <div className="flex items-start gap-2">
-                    <Users className="h-4 w-4 mt-0.5 text-zinc-500" />
+                    <Users className="mt-0.5 h-4 w-4 text-[var(--muted)]" />
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
                         Primary audience
                       </div>
-                      <div className="mt-1 text-sm text-zinc-800">
-                        {selected["Primary Audience"] || "—"}
+                      <div className="mt-1 text-sm text-[color:var(--foreground)]">
+                        {selected["Primary Audience"] || "-"}
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2">
                     <div className="h-4 w-4">
-                      <Languages className="h-4 w-4 mt-0.5 text-zinc-500" />
+                      <Languages className="mt-0.5 h-4 w-4 text-[var(--muted)]" />
                     </div>
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
                         Languages (clinical)
                       </div>
-                      <div className="mt-1 text-sm text-zinc-800">
-                        {selected["Languages Offered (clinical)"] || "—"}
+                      <div className="mt-1 text-sm text-[color:var(--foreground)]">
+                        {selected["Languages Offered (clinical)"] || "-"}
                       </div>
                     </div>
                   </div>
@@ -1192,31 +1209,31 @@ export function ProvidersTable({
                       selected[
                         "Availability of Professional Interpreters (Y/N)"
                       ],
-                    ) as any
+                    )
                   }
                 >
                   Interpreters:{" "}
                   {selected[
                     "Availability of Professional Interpreters (Y/N)"
-                  ] || "—"}
+                  ] || "-"}
                 </Badge>
-                <Badge tone={ynTone(selected["Telehealth (Y/N)"]) as any}>
-                  Telehealth: {selected["Telehealth (Y/N)"] || "—"}
+                <Badge tone={ynTone(selected["Telehealth (Y/N)"])}>
+                  Telehealth: {selected["Telehealth (Y/N)"] || "-"}
                 </Badge>
                 <Badge
-                  tone={ynTone(selected["Financial Assistance (Y/N)"]) as any}
+                  tone={ynTone(selected["Financial Assistance (Y/N)"])}
                 >
-                  Financial Aid: {selected["Financial Assistance (Y/N)"] || "—"}
+                  Financial Aid: {selected["Financial Assistance (Y/N)"] || "-"}
                 </Badge>
-                <Badge tone={ynTone(selected["Transportation (Y/N)"]) as any}>
-                  Transportation: {selected["Transportation (Y/N)"] || "—"}
+                <Badge tone={ynTone(selected["Transportation (Y/N)"])}>
+                  Transportation: {selected["Transportation (Y/N)"] || "-"}
                 </Badge>
               </div>
             </Section>
 
             {selected["Notes for Indian / South Asian Patients"] ? (
               <Section title="Notes" icon={<StickyNote className="h-4 w-4" />}>
-                <div className="text-sm text-zinc-800 whitespace-pre-wrap">
+                <div className="whitespace-pre-wrap text-sm text-[color:var(--foreground)]">
                   {selected["Notes for Indian / South Asian Patients"]}
                 </div>
               </Section>

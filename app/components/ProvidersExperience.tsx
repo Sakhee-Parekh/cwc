@@ -1,15 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-  Search,
-  Compass,
-  MapPin,
-  UserRound,
-  HeartHandshake,
-} from "lucide-react";
+import { HeartHandshake, MapPin, Search, UserRound } from "lucide-react";
 import type { Provider } from "../lib/providers";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { BackgroundShell } from "./BackgroundShell";
 import { TopNavbar } from "./TopNavBar";
@@ -82,113 +75,84 @@ export default function ProvidersExperience({
   return (
     <BackgroundShell>
       <TopNavbar />
-      <div className="relative z-10 px-4 pb-10 pt-10 sm:px-10 sm:pb-16 sm:pt-14">
-        <div className="mx-auto w-full max-w-4xl text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-[#415d43]/85 ring-1 ring-white/15">
-            <HeartHandshake className="h-4 w-4" />
-            Guidance, when you need it
-          </div>
 
-          <h1 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.02em] text-[#415d43] sm:text-6xl">
-            Find care and support that is right for you
-          </h1>
-
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-sm text-[#415d43]/75 sm:text-base">
-            Search by service, location, language, or access needs — then open a
-            provider to call, copy contact info, or get directions.
-          </p>
-
-          <form
-            onSubmit={submitCombined}
-            className="
-              mx-auto mt-7 w-full max-w-4xl
-              rounded-3xl sm:rounded-full
-              bg-white/90 p-2
-              shadow-xl ring-1 ring-black/5
-            "
-          >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#6B8477]" />
-                <input
-                  value={what}
-                  disabled={isSearching}
-                  onChange={(e) => setWhat(e.target.value)}
-                  placeholder='How can we help? (e.g. "therapy", "support group")'
-                  className="
-                    w-full
-                    rounded-2xl sm:rounded-full
-                    bg-transparent
-                    py-3 pl-12 pr-4
-                    text-sm text-[#0F241B]
-                    outline-none
-                    placeholder:text-[#7A9285]
-                  "
-                  autoFocus
-                />
-              </div>
-
-              <div className="relative flex-1">
-                <MapPin className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#6B8477]" />
-                <input
-                  value={where}
-                  disabled={isSearching}
-                  onChange={(e) => setWhere(e.target.value)}
-                  placeholder='Where? (city, region, or "telehealth")'
-                  className="
-                    w-full
-                    rounded-2xl sm:rounded-full
-                    bg-transparent
-                    py-3 pl-12 pr-4
-                    text-sm text-[#0F241B]
-                    outline-none
-                    placeholder:text-[#7A9285]
-                  "
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSearching}
-                className="
-                  inline-flex items-center justify-center gap-2
-                  rounded-2xl sm:rounded-full
-                  bg-[#709775]
-                  px-6 py-3
-                  text-sm font-semibold text-white
-                  shadow-sm
-                  hover:bg-[#5a7f63]
-                  active:scale-[0.99]
-                  w-full sm:w-auto
-                  disabled:opacity-70
-                  disabled:cursor-not-allowed
-                "
-              >
-                {isSearching ? (
-                  <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    Searching…
-                  </>
-                ) : (
-                  "Search"
-                )}
-              </button>
+      <div className="relative z-10 px-4 pb-12 pt-8 sm:px-8 sm:pb-16 sm:pt-10">
+        <div className="mx-auto w-full max-w-[1300px]">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-strong)] bg-white/90 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--accent)] shadow-sm">
+              <HeartHandshake className="h-4 w-4" />
+              A guided path to wellness
             </div>
-          </form>
 
-          <div className="mt-3 text-xs text-[#415d43]/60">
-            {data.length} providers available • Last synced {syncedLabel}
+            <h1 className="cwc-display mx-auto mt-6 max-w-5xl text-balance text-[2.9rem] leading-[0.95] text-[var(--foreground)] sm:text-[4.4rem]">
+              Clear, Compassionate Guidance for your Cancer Journey.
+            </h1>
+
+            <p className="mx-auto mt-5 max-w-3xl text-pretty text-base leading-7 text-[var(--muted)] sm:text-lg">
+              Search by service, location, language, or access needs, then click on
+              any provider to call, copy contact info, or get directions.
+            </p>
           </div>
 
-          <div className="mx-auto mt-6 w-full max-w-4xl">
+          <div className="mx-auto mt-10 max-w-[1080px] rounded-[2rem] cwc-panel-strong p-4 sm:p-5">
+            <form onSubmit={submitCombined}>
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                <div className="relative flex-1">
+                  <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--accent)]" />
+                  <input
+                    value={what}
+                    disabled={isSearching}
+                    onChange={(e) => setWhat(e.target.value)}
+                    placeholder='How can we help? (for example "therapy" or "support group")'
+                    className="cwc-input min-h-14 rounded-[1.35rem] py-4 pl-[3.25rem] pr-4 text-[0.96rem] lg:rounded-full"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="relative flex-1">
+                  <MapPin className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--accent)]" />
+                  <input
+                    value={where}
+                    disabled={isSearching}
+                    onChange={(e) => setWhere(e.target.value)}
+                    placeholder='Where? (city, region, or "telehealth")'
+                    className="cwc-input min-h-14 rounded-[1.35rem] py-4 pl-[3.25rem] pr-4 text-[0.96rem] lg:rounded-full"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSearching}
+                  className="cwc-button-primary inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-[1.35rem] px-7 py-4 text-sm font-semibold tracking-[0.08em] uppercase lg:w-auto lg:rounded-full disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isSearching ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                      Searching...
+                    </>
+                  ) : (
+                    "Search the directory"
+                  )}
+                </button>
+              </div>
+            </form>
+
+            <div className="mt-4 flex flex-col gap-2 border-t border-[var(--border)] pt-4 text-sm text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+              <span>{data.length} providers available</span>
+              <span>Last synced {syncedLabel}</span>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-8 max-w-[1080px]">
+            <div className="mb-3 text-center text-sm font-medium text-[var(--foreground)]">
+              Popular searches
+            </div>
             <div
               className="
-                flex gap-2
-                overflow-x-auto
-                pb-2
+                flex gap-2 overflow-x-auto pb-2 sm:justify-center
                 [-ms-overflow-style:none] [scrollbar-width:none]
                 [&::-webkit-scrollbar]:hidden
-                sm:flex-wrap sm:justify-center sm:overflow-visible sm:pb-0
+                sm:flex-wrap sm:overflow-visible sm:pb-0
               "
             >
               {quickChips.slice(0, 12).map((chip) => (
@@ -196,26 +160,14 @@ export default function ProvidersExperience({
                   key={chip}
                   type="button"
                   onClick={() => goToSearch(chip, "")}
-                  className="
-                    inline-flex shrink-0 items-center gap-2
-                    rounded-full
-                    bg-white/70
-                    px-4 py-2
-                    text-sm font-semibold text-[#415d43]/85
-                    ring-1 ring-white/15
-                    hover:bg-white/55
-                    active:scale-[0.99]
-                    whitespace-nowrap
-                  "
+                  className="cwc-button-secondary inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium whitespace-nowrap active:scale-[0.99]"
                 >
-                  <UserRound className="h-4 w-4 text-[#415d43]/80" />
+                  <UserRound className="h-4 w-4" />
                   {chip}
                 </button>
               ))}
             </div>
           </div>
-
-          <div className="h-10 sm:h-0" />
         </div>
       </div>
     </BackgroundShell>
